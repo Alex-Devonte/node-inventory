@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1= title
+  if categories_list.length 
+    dl
+      each category in categories_list
+        dt #{category.name}
+        dd #{category.description}
+  

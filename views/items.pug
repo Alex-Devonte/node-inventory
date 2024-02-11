@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  h1= title
+  if item_list.length 
+    each item in item_list 
+      div 
+        h2 #{item.name}
+        p #{item.description}
+        p Price: #{item.price}
+        p Stock: #{item.qtyInStock}
+        a(href=`/${item.url}`) Detail
+        hr
+  else 
+    p No items
+
