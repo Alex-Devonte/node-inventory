@@ -5,6 +5,7 @@ block content
   if categories_list.length 
     dl
       each category in categories_list
-        dt #{category.name}
+        dt 
+          a(href=category.url) #{category.name}
         dd #{category.description}
   
