@@ -1,0 +1,37 @@
+extends layout
+//- add required
+block content
+  h1=title
+  form(enctype='multipart/form-data' method='POST')
+    label(for='name') Item Name: 
+    input(type='text' placeholder='Name' name='name' value=(undefined===item ? '' : item.name))
+
+    label(for='description') Item Description: 
+    input(type='text' placeholder='Description' name='description' value=(undefined===item ? '' : item.description))
+
+    label(for='price') Set Item Price: 
+    input(type='text' placeholder='Price' name='price' value=(undefined===item ? '' : item.price))
+
+    label(for='stock') Set Item Stock: 
+    input(type='text' placeholder='Stock' name='stock' value=(undefined===item ? '' : item.qtyInStock))
+    
+    label(for='item-img') Upload item image: 
+    input(type='file' name='item-img')
+
+    label(for='category') Item Category: 
+    select(name='category' required)
+      option(value='') --Select an item category--
+      for category in categories
+        if item
+          if category._id.toString()===item.category._id.toString()
+            option(value=category._id selected) #{category.name}
+          else
+            option(value=category._id) #{category.name}
+        else 
+          option(value=category._id) #{category.name}
+
+    input(type='submit' value='Add item')
+    if errors
+      ul
+        for error in errors
+          li!= error.msg
