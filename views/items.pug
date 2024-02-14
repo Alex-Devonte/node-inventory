@@ -9,7 +9,7 @@ block content
         p #{item.description}
         p Price: #{item.price}
         p Stock: #{item.qtyInStock}
-        a(href=`/${item.url}`) Detail
+        a(href=item.url) Detail
         hr
   else 
     p No items
