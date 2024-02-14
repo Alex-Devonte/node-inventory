@@ -1,10 +1,13 @@
 const Item = require('../models/item');
+const Category = require('../models/category');
+const { body, validationResult } = require("express-validator");
 const asyncHandler = require('express-async-handler');
 
 exports.index = asyncHandler(async (req, res, next) => {
     res.render('index');
 });
 
+//Display list of all the items
 exports.item_list = asyncHandler(async (req, res, next) => {
     //Get all items while excluding description field
     const items = await Item.find({}, '-description').exec();
@@ -15,12 +18,72 @@ exports.item_list = asyncHandler(async (req, res, next) => {
     });
 });
 
+//Display detail page for item
 exports.item_detail = asyncHandler(async (req, res, next) => {
     //Get specific item by its id
-    const itemDetails = await Item.findById(req.params.id);
-
+    const itemDetails = await Item.findById(req.params.id).populate('category').exec();
     res.render('item_detail', {
         title: itemDetails.name,
         item: itemDetails
     });
 });
+
+//Display create item form
+exports.create_item_get = asyncHandler(async (req, res, next) => {
+    //Get categories to populate dropdown
+    const categories = await Category.find({}, 'name').sort({name: 1}).exec();
+    res.render('item_form', {
+        title: 'Create Item',
+        categories: categories
+    })
+});
+
+//Handle create item POST
+exports.create_item_post = [
+    //Convert category to array
+    (req, res, next) => {
+        if (!Array.isArray(req.body.category)) {
+            req.body.category = typeof req.body.category === 'undefined' ? [] : [req.body.category];
+        }
+        next();
+    },
+
+    body('name', 'Please enter item name').trim().isLength({min:3}).withMessage('Item names must be at least 3 characters long').escape(),
+    body('description').trim().isLength({max: 50}).escape(),
+    body('price', 'Please enter item price').trim().isFloat({min: 0.99, max: 999.99}).withMessage('Price must fall within the range of $0.99 to $999.99').escape(),
+    body('stock', 'Stock value must fall within the range of 0 to 99').trim().isInt({min: 0, max: 99}).escape(),
+    body('category.*').escape(),
+    
+    //Process request
+    asyncHandler(async (req, res, next) => {
+        //Extract errors from request
+        const errors = validationResult(req);
+
+        //Create Item object with cleaned data
+            const item = new Item({
+                category: req.body.category,
+                name: req.body.name,
+                description: req.body.description,
+                price: req.body.price,
+                qtyInStock: req.body.stock,
+                img: req.file?.path || ''
+            });
+
+        //Render form again if there are errors
+        if (!errors.isEmpty()) {
+            //Get categories for select input
+            const categories = await Category.find({}, 'name').sort({name: 1}).exec();
+
+            res.render('item_form', {
+                title: 'Create Item',
+                item: item,
+                categories: categories,
+                errors: errors.array(),
+            });
+        } else {
+            //Data is valid so save document and redirect
+            await item.save();
+            res.redirect('/' + item.url);
+        }
+    }),
+];
