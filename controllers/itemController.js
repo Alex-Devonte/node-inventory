@@ -60,14 +60,14 @@ exports.create_item_post = [
         const errors = validationResult(req);
 
         //Create Item object with cleaned data
-            const item = new Item({
-                category: req.body.category,
-                name: req.body.name,
-                description: req.body.description,
-                price: req.body.price,
-                qtyInStock: req.body.stock,
-                img: req.file?.path || ''
-            });
+        const item = new Item({
+            category: req.body.category,
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            qtyInStock: req.body.stock,
+            img: req.file?.path || ''
+        });
 
         //Render form again if there are errors
         if (!errors.isEmpty()) {
@@ -83,7 +83,81 @@ exports.create_item_post = [
         } else {
             //Data is valid so save document and redirect
             await item.save();
-            res.redirect('/' + item.url);
+            res.redirect(item.url);
+        }
+    }),
+];
+
+//Display item update form
+exports.update_item_get = asyncHandler(async (req, res, next) => {
+    //Get item and categories for form
+    const [item, categories] = await Promise.all([
+       Item.findById(req.params.id).populate('category').exec(),
+       Category.find().sort({name: 1}).exec(),
+    ]);
+
+    if (item === null) {
+        const err = new Error('No item found.');
+        err.status = 404;
+        return next(err);
+    }
+
+    res.render('item_form', {
+        title: 'Update Item',
+        item: item,
+        categories: categories
+    });
+});
+
+//Handle item update POST
+exports.update_item_post = [
+    //Convert category to array
+    (req, res, next) => {
+        if (!Array.isArray(req.body.category)) {
+            req.body.category = typeof req.body.category === 'undefined' ? [] : [req.body.category];
+        }
+        next();
+    },
+
+    
+    body('name', 'Please enter item name').trim().isLength({min:3}).withMessage('Item names must be at least 3 characters long').escape(),
+    body('description').trim().isLength({max: 50}).escape(),
+    body('price', 'Please enter item price').trim().isFloat({min: 0.99, max: 999.99}).withMessage('Price must fall within the range of $0.99 to $999.99').escape(),
+    body('stock', 'Stock value must fall within the range of 0 to 99').trim().isInt({min: 0, max: 99}).escape(),
+    body('category.*').escape(),
+
+    //Process request
+    asyncHandler(async (req, res, next) => {
+        //Extract errors from request
+        const errors = validationResult(req);
+
+        //Create Item object with cleaned data
+        const item = new Item({
+            category: req.body.category || [],
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            qtyInStock: req.body.stock,
+            img: req.file?.path || '',
+            _id: req.params.id, //REQUIRED: Or else New new will be assigned
+        });
+
+        //Render form again if there are errors
+        if (!errors.isEmpty()) {
+            //Get categories for select input
+            const categories = await Category.find({}, 'name').sort({name: 1}).exec();
+
+            res.render('item_form', {
+                title: 'Update Item',
+                item: item,
+                categories: categories,
+                errors: errors.array(),
+            });
+            return;
+        } else {
+            //Data is valid so update document and redirect
+            const updatedItem = await Item.findByIdAndUpdate(req.params.id, item, {});
+            res.redirect(updatedItem.url);
         }
     }),
 ];
