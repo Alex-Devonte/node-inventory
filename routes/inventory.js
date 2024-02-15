@@ -1,7 +1,21 @@
 var express = require('express');
 var router = express.Router();
 const multer = require('multer');
-const upload = multer({dest: 'uploads/'});
+const path = require('path');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+      // Use the original file name with a unique suffix
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const ext = path.extname(file.originalname); // Get the original file extension
+      cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+    }
+  });
+
+  const upload = multer({ storage: storage });
 
 const itemController = require('../controllers/itemController');
 const categoryController = require('../controllers/categoryController');
