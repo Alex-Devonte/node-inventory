@@ -25,6 +25,9 @@ router.get('/', itemController.index);
 router.get('/items/create', itemController.create_item_get);
 router.post('/items/create', upload.single('item-img'), itemController.create_item_post);
 
+router.get('/items/:id/delete', itemController.delete_item_get);
+router.post('/items/:id/delete', itemController.delete_item_post);
+
 router.get('/items/:id/update', itemController.update_item_get);
 router.post('/items/:id/update', upload.single('item-img'), itemController.update_item_post);
 
