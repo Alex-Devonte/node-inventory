@@ -31,6 +31,9 @@ block content
           option(value=category._id) #{category.name}
 
     input(type='submit' value='Add item')
+    //- Conditionally render current item image
+    if item && item.img
+      img(src='/'+item.img, alt='Item Image')
     if errors
       ul
         for error in errors
