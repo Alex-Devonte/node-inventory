@@ -34,6 +34,9 @@ router.post('/items/:id/update', upload.single('item-img'), itemController.updat
 router.get('/items', itemController.item_list);
 router.get('/items/:id', itemController.item_detail);
 
+router.get('/categories/create', categoryController.create_category_get);
+router.post('/categories/create', categoryController.create_category_post);
+
 router.get('/categories', categoryController.category_list);
 router.get('/categories/:id', categoryController.category_detail);
 
