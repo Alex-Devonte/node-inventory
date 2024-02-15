@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  h1=title
+  form(method='POST')
+    label(for='name') Category Name: 
+    input(type='text' placeholder='Category name' name='name' value=(undefined===category ? '' : category.name))
+
+    label(for='description') Category Description: 
+    input(type='text' placeholder='Category description' name='description' value=(undefined===category ? '' : category.description))
+    br
+    input(type='submit' value='Add category')
+  if errors
+    ul
+      for error in errors
+        li!= error.msg
