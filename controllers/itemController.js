@@ -161,3 +161,27 @@ exports.update_item_post = [
         }
     }),
 ];
+
+//Display Item delete form 
+exports.delete_item_get = asyncHandler(async (req, res, next) => {
+    const itemDetails = await Item.findById(req.params.id).populate('category').exec();
+
+    if (itemDetails) {
+        res.render('item_delete', {
+            title: itemDetails.name,
+            item: itemDetails
+        });
+    } else {
+        res.redirect('/inventory/items');
+    }
+});
+
+//Handle Item delete POST
+exports.delete_item_post = asyncHandler(async (req, res, next) => {
+    const itemDetails = await Item.findById(req.params.id).populate('category').exec();
+
+    if (itemDetails) {
+        await Item.findByIdAndDelete(req.body.itemid);
+    }
+    res.redirect('/inventory/items');
+});
