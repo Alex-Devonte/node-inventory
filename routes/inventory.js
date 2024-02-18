@@ -37,6 +37,9 @@ router.get('/items/:id', itemController.item_detail);
 router.get('/categories/create', categoryController.create_category_get);
 router.post('/categories/create', categoryController.create_category_post);
 
+router.get('/categories/:id/delete', categoryController.delete_category_get);
+router.post('/categories/:id/delete', categoryController.delete_category_post);
+
 router.get('/categories', categoryController.category_list);
 router.get('/categories/:id', categoryController.category_detail);
 
