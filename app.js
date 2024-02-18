@@ -45,8 +45,10 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+
 mongoose.set('strictQuery', false);
-const mongoDB = process.env.MONGODB_URL;
+//Set the MongoDB connection string based on the environment
+const mongoDB = (process.env.NODE_ENV === 'production') ? process.env.MONGODB_URL_PROD : process.env.MONGODB_URL_DEV;
 
 main().catch((err) => console.log(err));
 async function main() {
