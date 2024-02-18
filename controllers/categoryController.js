@@ -78,3 +78,45 @@ exports.create_category_post = [
         }
     }),
 ];
+
+//Display category delete page
+exports.delete_category_get = asyncHandler(async (req, res, next) => {
+    //Get category and all items in that category
+    const [category, itemsInCategory] = await Promise.all([
+        Category.findById(req.params.id).exec(),
+        Item.find({category: req.params.id}, 'name').exec(),
+    ]);
+  
+    //Redirect if category can't be found
+    if (category === null) {
+        res.redirect("/categories");
+    }
+  
+    res.render("category_delete", {
+      title: "Delete Category",
+      category: category,
+      categoryItems: itemsInCategory,
+    });
+  });
+
+//Handle Category delete POST
+exports.delete_category_post = asyncHandler(async (req, res, next) => {
+    //Get category and all items in that category
+    const [category, itemsInCategory] = await Promise.all([
+        Category.findById(req.params.id).exec(),
+        Item.find({category: req.params.id}, 'name').exec(),
+    ]);
+
+    if (itemsInCategory.length > 0) {
+        //Category has items so it can't be deleted yet
+        res.render('category_delete', {
+            title: 'Delete Category',
+            category: category,
+            categoryItems: itemsInCategory,
+        });
+    } else {
+        //Category has no items so delete it and redirect
+        await Category.findByIdAndDelete(req.body.categoryid);
+        res.redirect('/inventory/categories')
+    }
+});
