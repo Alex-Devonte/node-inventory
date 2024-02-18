@@ -79,6 +79,69 @@ exports.create_category_post = [
     }),
 ];
 
+//Display category update form
+exports.update_category_get = asyncHandler(async (req, res, next) => {
+    const category = await Category.findById(req.params.id).exec();
+
+    if (category === null) {
+        const err = new Error('Category not found');
+        err.status = 404;
+        return next(err);
+    }
+
+    res.render('category_form', {
+        title: 'Update Category',
+        category: category
+    });
+});
+
+exports.update_category_post = [
+    body('name', 'Category name must contain at least 3 characters')
+        .trim()
+        .isLength({min: 3})
+        .custom(async (value) => {
+            const categoryExists = await Category.findOne({name: value})
+                .collation({locale: 'en', strength: 2})
+                .exec();
+            //Return true if user didn't change name
+            if (value === categoryExists?.name) {
+                return true;
+            }
+            else if (categoryExists) {
+                throw new Error('A category with that name already exists');
+            }
+            return true;
+        })
+        .escape(),
+    
+    body('description', 'Description cannot be more than 50 characters')
+        .trim()
+        .isLength({max: 50})
+        .escape(),
+
+    asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req);
+        
+        const category = new Category({
+            name: req.body.name,
+            description: req.body.description,
+            _id: req.params.id //REQUIRED: Or else New new will be assigned
+        });
+
+        if (!errors.isEmpty()) {
+            res.render('category_form', {
+               title: 'Update Category',
+               category: category,
+               errors: errors.array() 
+            });
+        } else {
+            const updatedCategory = await Category.findByIdAndUpdate(req.params.id, category, {});
+            res.redirect(updatedCategory.url);
+        }
+    })
+    
+];
+
 //Display category delete page
 exports.delete_category_get = asyncHandler(async (req, res, next) => {
     //Get category and all items in that category
