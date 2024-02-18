@@ -52,9 +52,9 @@ exports.create_category_post = [
         })
         .escape(),
     
-    body('description', 'Description cannot be more than 50 characters')
+    body('description', 'Description cannot be more than 120 characters')
         .trim()
-        .isLength({max: 50})
+        .isLength({max: 120})
         .escape(),
     
     //Process request
@@ -116,9 +116,9 @@ exports.update_category_post = [
         })
         .escape(),
     
-    body('description', 'Description cannot be more than 50 characters')
+    body('description', 'Description cannot be more than 120 characters')
         .trim()
-        .isLength({max: 50})
+        .isLength({max: 120})
         .escape(),
 
     asyncHandler(async (req, res, next) => {
