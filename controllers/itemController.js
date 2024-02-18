@@ -48,10 +48,28 @@ exports.create_item_post = [
         next();
     },
 
-    body('name', 'Please enter item name').trim().isLength({min:3}).withMessage('Item names must be at least 3 characters long').escape(),
-    body('description').trim().isLength({max: 50}).escape(),
-    body('price', 'Please enter item price').trim().isFloat({min: 0.99, max: 999.99}).withMessage('Price must fall within the range of $0.99 to $999.99').escape(),
-    body('stock', 'Stock value must fall within the range of 0 to 99').trim().isInt({min: 0, max: 99}).escape(),
+    body('name', 'Please enter item name')
+        .trim()
+        .isLength({min:3, max: 40})
+        .withMessage('Item names must be between 3 & 40 characters long')
+        .escape(),
+
+    body('description', 'Description cannot be more than 50 characters')
+        .trim()
+        .isLength({max: 50})
+        .escape(),
+
+    body('price', 'Please enter item price')
+        .trim()
+        .isFloat({min: 0.99, max: 999.99})
+        .withMessage('Price must fall within the range of $0.99 to $999.99')
+        .escape(),
+
+        body('stock', 'Stock value must fall within the range of 0 to 99')
+        .trim()
+        .isInt({min: 0, max: 99})
+        .escape(),
+        
     body('category.*').escape(),
     
     //Process request
@@ -63,7 +81,7 @@ exports.create_item_post = [
         const item = new Item({
             category: req.body.category,
             name: req.body.name,
-            description: req.body.description,
+            description: req.body.description || 'No item description',
             price: req.body.price,
             qtyInStock: req.body.stock,
             img: req.file?.path || ''
@@ -119,11 +137,28 @@ exports.update_item_post = [
         next();
     },
 
-    
-    body('name', 'Please enter item name').trim().isLength({min:3}).withMessage('Item names must be at least 3 characters long').escape(),
-    body('description').trim().isLength({max: 50}).escape(),
-    body('price', 'Please enter item price').trim().isFloat({min: 0.99, max: 999.99}).withMessage('Price must fall within the range of $0.99 to $999.99').escape(),
-    body('stock', 'Stock value must fall within the range of 0 to 99').trim().isInt({min: 0, max: 99}).escape(),
+    body('name', 'Please enter item name')
+        .trim()
+        .isLength({min:3, max: 40})
+        .withMessage('Item names must be between 3 & 40 characters long')
+        .escape(),
+
+    body('description', 'Description cannot be more than 50 characters')
+        .trim()
+        .isLength({max: 50})
+        .escape(),
+
+    body('price', 'Please enter item price')
+        .trim()
+        .isFloat({min: 0.99, max: 999.99})
+        .withMessage('Price must fall within the range of $0.99 to $999.99')
+        .escape(),
+   
+        body('stock', 'Stock value must fall within the range of 0 to 99')
+        .trim()
+        .isInt({min: 0, max: 99})
+        .escape(),
+        
     body('category.*').escape(),
 
     //Process request
