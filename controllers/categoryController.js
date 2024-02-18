@@ -37,9 +37,10 @@ exports.create_category_get = (req, res, next) => {
 
 //Handle create category POST
 exports.create_category_post = [
-    body('name', 'Category name must contain at least 3 characters')
+    body('name')
         .trim()
-        .isLength({min: 3})
+        .isLength({min: 3, max: 20})
+        .withMessage('Category name must be between 3 & 20 characters')
         .custom(async (value) => {
             const categoryExists = await Category.findOne({name: value})
                 .collation({locale: 'en', strength: 2})
@@ -61,7 +62,7 @@ exports.create_category_post = [
         const errors = validationResult(req);
         const category = new Category({
             name: req.body.name, 
-            description: req.body.description
+            description: req.body.description || 'No description'
         });
 
         //Render form again if there are errors
@@ -96,9 +97,10 @@ exports.update_category_get = asyncHandler(async (req, res, next) => {
 });
 
 exports.update_category_post = [
-    body('name', 'Category name must contain at least 3 characters')
+    body('name')
         .trim()
-        .isLength({min: 3})
+        .isLength({min: 3, max: 20})
+        .withMessage('Category name must be between 3 & 20 characters')
         .custom(async (value) => {
             const categoryExists = await Category.findOne({name: value})
                 .collation({locale: 'en', strength: 2})
