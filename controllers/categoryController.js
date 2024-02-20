@@ -6,12 +6,36 @@ const { body, validationResult } = require("express-validator");
 
 //Display list of all categories
 exports.category_list = asyncHandler(async (req, res, next) => {
-    //Get all categories
-    const categories = await Category.find({}).exec();
-
+    //Get all categories and item count for each category
+    const categories = await Category.aggregate([
+            {
+                $lookup: {
+                    from: 'items',
+                    localField: '_id',
+                    foreignField: 'category',
+                    as: 'items'
+                },
+            },
+            {
+                //Virtuals aren't directly accessible in aggregation queries so use $addFields to manually create url field
+                $addFields: {
+                    url:  {$concat: ['/inventory/categories/', { $toString: '$_id' }]}
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    name: 1,
+                    description: 1,
+                    url: 1,
+                    count: {$size: '$items'},
+                },
+            },
+    ]).exec();
+    
     res.render('categories', {
         title: 'Categories',
-        categories_list: categories
+        categories: categories,
     });
 });
 
