@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "buildcss": "npx tailwindcss -i ./public/stylesheets/style.css -o ./public/stylesheets/output.css",
-    "watchcss": "npm run buildcss -- --watch",
+    "build:css": "npx tailwindcss -i ./public/stylesheets/style.css -o ./public/stylesheets/output.css",
+    "watch:css": "npm run build:css -- --watch",
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
     "serverstart": "DEBUG=node-inventory:* npm run devstart"
