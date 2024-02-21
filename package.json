@@ -5,7 +5,7 @@
   "scripts": {
     "buildcss": "npx tailwindcss -i ./public/stylesheets/style.css -o ./public/stylesheets/output.css",
     "watchcss": "npm run buildcss -- --watch",
-    "start": "node ./bin/www npm run build:css",
+    "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
     "serverstart": "DEBUG=node-inventory:* npm run devstart"
   },
