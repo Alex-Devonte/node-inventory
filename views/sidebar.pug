@@ -1,0 +1,38 @@
+div(id='sidebar' class='shadow-[5px_0px_5px_0px_rgba(0,0,0,0.75)] absolute min-h-screen overflow-y-auto bg-slate-950 w-60 transition-transform transform -translate-x-full ease-in-out duration-300')
+  div(class='p-4 w-full')
+    nav
+      ul
+        li(class='my-1')
+          a(href='/' class='flex items-center px-4 py-2 text-slate-50 hover:bg-slate-500') Home
+        li(class='group my-1')
+          a(class='flex items-center px-4 py-2 text-slate-50 hover:bg-slate-500') Items 
+          ul(class='hidden group-hover:block bg-slate-500')
+            li
+              a(href='/inventory/items/' class='flex items-center px-4 py-2 text-slate-50 hover:text-slate-950 hover:bg-slate-500') View items
+              a(href='/inventory/items/create' class='flex items-center px-4 py-2 text-slate-50 hover:text-slate-950 hover:bg-slate-500') Create new item
+        
+        li(class='group my-1')
+          a(class='flex items-center px-4 py-2 text-slate-50 hover:bg-slate-500') Categories
+          ul(class='hidden group-hover:block bg-slate-500')
+            li
+              a(href='/inventory/categories' class='flex items-center px-4 py-2 text-slate-50 hover:text-slate-950 hover:bg-slate-500') View categories
+              a(href='/inventory/categories/create' class='flex items-center px-4 py-2 text-slate-50 hover:text-slate-950 hover:bg-slate-500') Create new category
+
+svg(id='open-sidebar' class='bg-slate-950 w-20 h-7 rounded-md border-2 border-slate-50 absolute top-5 right-5 stroke-slate-50 hover:bg-slate-500 cursor-pointer' fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg")
+  path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16")
+
+script.
+  const sidebar = document.querySelector('#sidebar');
+  const openSidebarBtn = document.querySelector('#open-sidebar');
+
+  openSidebarBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sidebar.classList.toggle('-translate-x-full');
+  });
+
+  //Close sidebar when user clicks outside it
+  document.addEventListener('click', (e) => {
+      if (!sidebar.contains(e.target) && !openSidebarBtn.contains(e.target)) {
+          sidebar.classList.add('-translate-x-full')
+      }
+  });
