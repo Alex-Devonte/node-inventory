@@ -1,12 +1,21 @@
 extends layout
 
 block content
-  h1=title
-  h2 #{category.name}
-  ul
-    each item in category_items 
-      li
-        a(href=item.url) #{item.name}
-  a(href=category.url+'/update') Update category
-  br
-  a(href=category.url+'/delete') Delete category
+  div(class='mx-auto p-5')
+    h1(class='text-6xl font-bold text-center mt-10 mb-32 md:mb-48') #{title}
+    div(class='border-2 border-slate-500 bg-slate-300 p-5 text-slate-950')
+      div(class='p-5 text-center')
+        h2(class='text-3xl') #{category.name}
+        p(class='text-lg italic') #{category.description}
+      hr(class='border-slate-950')
+      div(class='p-5')
+        h3(class='text-xl underline text-center mb-3') Items in this category
+        ul(class='text-lg flex flex-wrap p-2 text-center')
+          each item in category_items 
+            li(class='w-1/2 md:w-1/4')
+              a(href=item.url class='text-slate-950 hover:text-slate-50 hover:underline') #{item.name}
+      hr(class='border-slate-950')
+      div(class='text-lg p-5 flex justify-evenly ')
+        a(href=category.url+'/update' class='text-slate-950 hover:text-slate-50 hover:underline') Update category
+        br
+        a(href=category.url+'/delete' class='text-slate-950 hover:text-slate-50 hover:underline') Delete category
