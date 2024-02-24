@@ -1,11 +1,18 @@
 extends layout
 
 block content
-  h1= title
-  if categories_list.length 
-    dl
-      each category in categories_list
-        dt 
-          a(href=category.url) #{category.name}
-        dd #{category.description}
-  
+ 
+  div(class='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full')
+    h1(class='text-6xl font-bold grid text-center col-span-full items-center') #{title}
+    if categories.length
+      each category in categories
+        a(href=category.url class='group bg-slate-300 shadow-xl border-2 border-slate-500 m-5 rounded-md p-2 flex flex-col h-56 hover:bg-slate-400 ease-in duration-100')
+          div(class='h-full p-2 flex flex-col')
+            h2(class='text-3xl font-medium block text-slate-900 ease-in duration-75 group-hover:text-slate-100') #{category.name}
+            div(class='mt-auto')
+              p(class='text-lg text-slate-700 italic') #{category.description}
+            div(class='flex justify-end mt-auto')
+              div(class='bg-slate-900 text-slate-50 w-11 text-center p-3 flex justify-center rounded-full') 
+                p #{category.count}
+    else
+      p No categories
