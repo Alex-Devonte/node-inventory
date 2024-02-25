@@ -10,12 +10,12 @@ block content
       hr(class='border-slate-950')
       div(class='p-5')
         h3(class='text-xl underline text-center mb-3') Items in this category
-        ul(class='text-lg flex flex-wrap p-2 text-center')
+        ul(class='text-lg grid sm:grid-cols-2 md:grid-cols-3 text-center gap-5')
           each item in category_items 
-            li(class='w-1/2 md:w-1/4')
+            li(class='p-2')
               a(href=item.url class='text-slate-950 hover:text-slate-50 hover:underline') #{item.name}
       hr(class='border-slate-950')
-      div(class='text-lg p-5 flex justify-evenly ')
+      div(class='text-lg p-5 flex justify-evenly text-center')
         a(href=category.url+'/update' class='text-slate-950 hover:text-slate-50 hover:underline') Update category
         br
         a(href=category.url+'/delete' class='text-slate-950 hover:text-slate-50 hover:underline') Delete category
