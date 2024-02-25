@@ -1,16 +1,18 @@
 extends layout
 
 block content
-  h1=title
-  form(method='POST')
-    label(for='name') Category Name: 
-    input(type='text' placeholder='Category name' name='name' value=(undefined===category ? '' : category.name))
+  div(class='mx-auto flex flex-col gap-5')
+    h1(class='text-center text-6xl font-bold my-10') #{title}
+    form(method='POST' class='flex flex-col sm:flex-row gap-8 mt-20')
+      label(for='name' class='font-bold self-center') Category Name: 
+      input(type='text' placeholder='Category name' name='name' class='border-2 border-slate-950 rounded-md p-1' value=(undefined===category ? '' : category.name))
 
-    label(for='description') Category Description: 
-    input(type='text' placeholder='Category description' name='description' value=(undefined===category ? '' : category.description))
-    br
-    input(type='submit' value='Add category')
-  if errors
-    ul
-      for error in errors
-        li!= error.msg
+      label(for='description' class='font-bold self-center') Category Description: 
+      input(type='text' placeholder='Category description' name='description' class='border-2 border-slate-950 rounded-md p-1' value=(undefined===category ? '' : category.description))
+      br
+      input(type='submit' value='Add category' class='bg-slate-900 text-slate-50 rounded-md p-2 hover:bg-slate-500 cursor-pointer')
+    if errors
+      p(class='font-bold text-lg') Please fix the following errors: 
+      ul
+        for error in errors
+          li(class='underline text-lg') #{error.msg}

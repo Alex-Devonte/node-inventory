@@ -1,40 +1,48 @@
 extends layout
-//- add required
+
 block content
-  h1=title
-  form(enctype='multipart/form-data' method='POST')
-    label(for='name') Item Name: 
-    input(type='text' placeholder='Name' name='name' value=(undefined===item ? '' : item.name))
+  div(class='mx-auto flex flex-col')
+    h1(class='text-center text-6xl font-bold my-10') #{title}
+    form(enctype='multipart/form-data' method='POST' class='grid gap-2 mt-20')
+      div(class='grid col-span-full') 
+        label(for='name' class='font-bold') Item Name: 
+        input(type='text' placeholder='Name' name='name' class='border-2 border-slate-950 rounded-md p-1' value=(undefined===item ? '' : item.name))
+      
+      div(class='grid col-span-full')                     
+        label(for='description' class='font-bold') Item Description: 
+        input(type='text' placeholder='Description' name='description' class='border-2 border-slate-950 rounded-md p-1' value=(undefined===item ? '' : item.description))
+      
+      div(class='grid col-span-full')
+        label(for='price' class='font-bold') Set Item Price: 
+        input(type='text' placeholder='Price' name='price' class='border-2 border-slate-950 rounded-md p-1' value=(undefined===item ? '' : item.price))
+      
+      div(class='grid col-span-full')
+        label(for='stock' class='font-bold') Set Item Stock: 
+        input(type='text' placeholder='Stock' name='stock' class='border-2 border-slate-950 rounded-md p-1' value=(undefined===item ? '' : item.qtyInStock))
+     
+      div(class='grid col-span-full')
+        label(for='item-img' class='font-bold') Upload item image: 
+        input(type='file' name='item-img')
+         //- Conditionally render current item image
+        if item && item.img
+          img(src='/'+item.img, alt='Item Image' class='w-60 my-5')
+     
+      div(class='grid col-span-full')
+        label(for='category' class='font-bold') Item Category: 
+        select(name='category' class='border-2 border-slate-950 rounded-md p-1' required)
+          option(value='') --Select an item category--
+          for category in categories
+            if item
+              if category._id.toString()===item.category._id.toString()
+                option(value=category._id selected) #{category.name}
+              else
+                option(value=category._id) #{category.name}
+            else 
+              option(value=category._id) #{category.name}
 
-    label(for='description') Item Description: 
-    input(type='text' placeholder='Description' name='description' value=(undefined===item ? '' : item.description))
-
-    label(for='price') Set Item Price: 
-    input(type='text' placeholder='Price' name='price' value=(undefined===item ? '' : item.price))
-
-    label(for='stock') Set Item Stock: 
-    input(type='text' placeholder='Stock' name='stock' value=(undefined===item ? '' : item.qtyInStock))
-    
-    label(for='item-img') Upload item image: 
-    input(type='file' name='item-img')
-
-    label(for='category') Item Category: 
-    select(name='category' required)
-      option(value='') --Select an item category--
-      for category in categories
-        if item
-          if category._id.toString()===item.category._id.toString()
-            option(value=category._id selected) #{category.name}
-          else
-            option(value=category._id) #{category.name}
-        else 
-          option(value=category._id) #{category.name}
-
-    input(type='submit' value='Add item')
-    //- Conditionally render current item image
-    if item && item.img
-      img(src='/'+item.img, alt='Item Image')
-    if errors
-      ul
-        for error in errors
-          li!= error.msg
+      input(type='submit' value='Add item' class='justify-self-end bg-slate-900 text-slate-50 rounded-md p-2 hover:bg-slate-500 cursor-pointer')
+      if errors
+        p(class='font-bold text-lg col-span-full') Please fix the following errors: 
+        ul
+          for error in errors
+            li(class='underline text-lg') #{error.msg}
