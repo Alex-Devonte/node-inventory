@@ -1,6 +1,8 @@
 extends layout
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  div(class='flex flex-col items-center justify-center border-2 border-slate-700 p-2 w-full')
+    h1(class='text-6xl font-bold') #{message}
+    h1(class='text-6xl font-bold') #{error.status}
+    a(href='/' class='text-3xl hover:underline mt-10') Click here to return to the homepage
+    pre #{error.stack}
