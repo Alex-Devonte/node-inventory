@@ -1,16 +1,23 @@
 extends layout
 
 block content
-  h1= title
-  if item_list.length 
-    each item in item_list 
-      div 
-        h2 #{item.name}
-        p #{item.description}
-        p Price: #{item.price}
-        p Stock: #{item.qtyInStock}
-        a(href=item.url) Detail
-        hr
-  else 
-    p No items
+  div(class='w-full m-10')
+    h1(class='text-6xl font-bold text-center mb-20') #{title}
+    if item_list.length 
+      div(class='grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-5 justify-items-center')
+        each item in item_list 
+          div(class='border-2 border-slate-500 shadow-xl text-slate-950 rounded-md grid lg:grid-cols-2 p-10 w-5/6')
+            div(class='flex flex-col gap-5') 
+              h2(class='font-bold text-2xl') #{item.name}
+              p(class='text-lg font-bold') Price: $#{item.price}
+              p(class='text-lg font-bold') Stock: #{item.qtyInStock}
+              a(href=item.url class='text-lg text-slate-600 rounded-sm hover:underline') Click here for item details
+            div(class='flex justify-center')
+              if item.img
+                img(src='/'+item.img class='object-cover')
+              else
+                img(src='/images/placeholder.jpg' class='object-cover')
+    else 
+      p(class='text-lg text-center') No items found!
+      a(href='/inventory/items/create' class='block text-lg text-center hover:underline') Click here to create one
 

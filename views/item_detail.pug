@@ -1,13 +1,20 @@
 extends layout
 
 block content
-  h1 #{title}
-  p #{item.description}
-  p Price: #{item.price}
-  p Stock: #{item.qtyInStock}
-  img(src='/'+item.img, alt='Image Description')
-  p Category: 
-    a(href=item.category.url) #{item.category.name}
-  a(href=item.url+'/update') Update item
-  br
-  a(href=item.url+'/delete') Delete item
+  div(class='mx-auto p-5')
+    div(class='text-center')
+      h1(class='text-6xl font-bold mt-52 mb-4') #{title}
+      h2(class='text-2xl italic mb-4') #{item.description}
+      p(class='text-2xl') Category: 
+        a(href=item.category.url class='hover:underline') #{item.category.name}
+    div(class='flex flex-col items-center md:flex-row md:justify-evenly mt-10')
+      p(class='font-bold text-lg') Price: #{item.price}
+      p(class='font-bold text-lg') Stock: #{item.qtyInStock}
+    div(class='flex justify-center p-10')
+      if item.img
+        img(src='/'+item.img alt='Image Description' class='w-1/2')
+      else
+        img(src='/images/placeholder.jpg' alt='Image Description' class='w-1/2')
+    div(class='flex flex-col items-center md:flex-row md:justify-evenly')
+      a(href=item.url+'/update' class='text-slate-950 hover:text-slate-50 text-lg hover:underline') Update item
+      a(href=item.url+'/delete' class='text-slate-950 hover:text-slate-50 text-lg hover:underline') Delete item
