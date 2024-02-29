@@ -77,6 +77,11 @@ exports.create_item_post = [
         //Extract errors from request
         const errors = validationResult(req);
 
+        //Check for Multer error
+        if (req.multerError) {
+            errors.errors.push({ msg: req.multerError });
+        }
+
         //Create Item object with cleaned data
         const item = new Item({
             category: req.body.category,
@@ -165,6 +170,11 @@ exports.update_item_post = [
     asyncHandler(async (req, res, next) => {
         //Extract errors from request
         const errors = validationResult(req);
+
+        //Check for Multer error
+        if (req.multerError) {
+            errors.errors.push({ msg: req.multerError });
+        }
 
         //Create Item object with cleaned data
         const item = new Item({

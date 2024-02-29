@@ -15,7 +15,21 @@ const storage = multer.diskStorage({
     }
   });
 
-  const upload = multer({ storage: storage });
+const fileFilter = function(req, file, cb) {
+  const fileTypes = ['image/png', 'image/jpeg'];
+
+  if (fileTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    req.multerError ='Invalid file type. Only PNG and JPEG files are allowed.';
+    cb(null, false);
+  }
+}
+
+const upload = multer({ 
+    storage: storage,
+    fileFilter: fileFilter
+});
 
 const itemController = require('../controllers/itemController');
 const categoryController = require('../controllers/categoryController');
