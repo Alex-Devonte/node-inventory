@@ -12,7 +12,7 @@ block content
       p(class='font-bold text-lg') Stock: #{item.qtyInStock}
     div(class='flex justify-center p-10')
       if item.img
-        img(src='/'+item.img alt='Image Description' class='w-1/2')
+        img(src=item.img alt='Image Description' class='w-1/2')
       else
         img(src='/images/placeholder.jpg' alt='Image Description' class='w-1/2')
     div(class='flex flex-col items-center md:flex-row md:justify-evenly')

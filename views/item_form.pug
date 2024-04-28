@@ -25,7 +25,7 @@ block content
         input(type='file' name='item-img')
          //- Conditionally render current item image
         if item && item.img
-          img(src='/'+item.img, alt='Item Image' class='w-60 my-5')
+          img(src=item.img, alt='Item Image' class='w-60 my-5')
      
       div(class='grid col-span-full')
         label(for='category' class='font-bold') Item Category: 

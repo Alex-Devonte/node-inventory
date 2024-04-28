@@ -3,17 +3,9 @@ var router = express.Router();
 const multer = require('multer');
 const path = require('path');
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads/');
-    },
-    filename: function (req, file, cb) {
-      // Use the original file name with a unique suffix
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const ext = path.extname(file.originalname); // Get the original file extension
-      cb(null, file.fieldname + '-' + uniqueSuffix + ext);
-    }
-  });
+const aws = require('aws-sdk');
+const multerS3 = require('multer-s3');
+
 
 const fileFilter = function(req, file, cb) {
   const fileTypes = ['image/png', 'image/jpeg'];
@@ -26,10 +18,49 @@ const fileFilter = function(req, file, cb) {
   }
 }
 
-const upload = multer({ 
+let upload;
+
+if (process.env.NODE_ENV === 'production') {
+    //Configure AWS
+    const s3 = new aws.S3({
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        region: process.env.AWS_REGION
+    });
+
+    upload = multer({
+        storage: multerS3({
+            s3: s3,
+            bucket: process.env.AWS_BUCKET,
+            metadata: function (req, file, cb) {
+                cb(null, {
+                    fieldName: file.fieldname,
+                    contentType: file.mimetype
+                });
+            },
+            key: function (req, file, cb) {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+                cb(null, uniqueSuffix + '-' + file.originalname);
+            }
+        }), fileFilter: fileFilter
+    });
+} else {
+    const storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, 'uploads/')
+        },
+        filename: function (req, file, cb) {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            cb(null, uniqueSuffix+file.originalname)
+        }
+    });
+
+  upload = multer({ 
     storage: storage,
     fileFilter: fileFilter
-});
+  });
+}
+
 
 const itemController = require('../controllers/itemController');
 const categoryController = require('../controllers/categoryController');

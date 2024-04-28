@@ -82,6 +82,18 @@ exports.create_item_post = [
             errors.errors.push({ msg: req.multerError });
         }
 
+        console.log('req file: \\', req.file)
+        let imagePath;
+        if (req.file) {
+            if (process.env.NODE_ENV === 'production') {
+                imagePath = `${process.env.AWS_BUCKET_URL}${req.file.key}`;
+            } else {
+                imagePath = "\\" + req.file.path;
+            }
+        }
+
+        console.log(imagePath)
+
         //Create Item object with cleaned data
         const item = new Item({
             category: req.body.category,
@@ -89,7 +101,7 @@ exports.create_item_post = [
             description: req.body.description || 'No item description',
             price: req.body.price,
             qtyInStock: req.body.stock,
-            img: req.file?.path || ''
+            img: imagePath || ''
         });
 
         //Render form again if there are errors
@@ -176,6 +188,15 @@ exports.update_item_post = [
             errors.errors.push({ msg: req.multerError });
         }
 
+        let imagePath;
+        if (req.file) {
+            if (process.env.NODE_ENV === 'production') {
+                imagePath = `${process.env.AWS_BUCKET_URL}${req.file.key}`;
+            } else {
+                imagePath = "\\" + req.file.path;
+            }
+        }
+
         //Create Item object with cleaned data
         const item = new Item({
             category: req.body.category || [],
@@ -183,7 +204,7 @@ exports.update_item_post = [
             description: req.body.description,
             price: req.body.price,
             qtyInStock: req.body.stock,
-            img: req.file?.path || '',
+            img: imagePath || '',
             _id: req.params.id, //REQUIRED: Or else New new will be assigned
         });
 
