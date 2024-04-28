@@ -82,7 +82,6 @@ exports.create_item_post = [
             errors.errors.push({ msg: req.multerError });
         }
 
-        console.log('req file: \\', req.file)
         let imagePath;
         if (req.file) {
             if (process.env.NODE_ENV === 'production') {
@@ -91,8 +90,6 @@ exports.create_item_post = [
                 imagePath = "\\" + req.file.path;
             }
         }
-
-        console.log(imagePath)
 
         //Create Item object with cleaned data
         const item = new Item({
